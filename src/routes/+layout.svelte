@@ -6,10 +6,7 @@
 
 <div class="app font-thin">
 	<Header />
-
 	<main>
 		<slot />
 	</main>
-
-	<Footer />
 </div>

@@ -1,5 +1,8 @@
 <script lang="ts">
-	import backgroundImage from '$lib/assets/ocean-kiss.jpg';
+	import FadeInImage from '$lib/components/FadeInImage.svelte';
+	import type { PageData } from './$types';
+
+	export let data: PageData;
 </script>
 
 <svelte:head>
@@ -8,12 +11,18 @@
 </svelte:head>
 
 <section class="h-screen relative flex justify-center items-center">
-	<img src={backgroundImage} alt="background" class="absolute object-cover h-full w-full" />
-	<div class="z-10 flex flex-col justify-center items-center">
-		<h1 class="text-6xl">Welcome to our story.</h1>
+	<FadeInImage
+		imagePath={data.backgroundImagePath}
+		alt="background"
+		otherClasses="absolute object-cover"
+	/>
+	<div class="z-10 flex flex-col justify-center items-center m-3">
+		<h1 class="text-4xl text-center lg:text-6xl transition-all duration-500">
+			Welcome to our story.
+		</h1>
 		<a
 			href="/gallery"
-			class="px-12 py-1 text-xl border border-black hover:bg-primary w-min transition ease-in-out duration-500 whitespace-nowrap"
+			class="px-12 mt-3 py-1 text-lg lg:text-2xl border border-black hover:bg-primary w-min transition ease-in-out duration-500 whitespace-nowrap hover:text-tertiary hover:border-tertiary transition-all duration-500"
 			>See our day.</a
 		>
 	</div>

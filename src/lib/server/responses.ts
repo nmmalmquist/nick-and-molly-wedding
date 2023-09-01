@@ -17,3 +17,10 @@ export const invalidLoginResponse = () => {
 		message: 'Incorrect username and/or password'
 	});
 };
+
+export const unknownErrorResponse = () => {
+	return fail(500, {
+		successful: false,
+		message: 'An unknown error occurred'
+	});
+};
