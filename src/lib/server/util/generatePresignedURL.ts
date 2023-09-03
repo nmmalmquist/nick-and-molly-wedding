@@ -2,7 +2,8 @@ import {
 	CLOUDFRONT_KEY_ACCESS_ID,
 	CLOUDFRONT_KEY_EXPIRE_TIME_SECONDS,
 	CLOUDFRONT_PRIVATE_KEY_PATH,
-	CLOUDFRONT_S3_ROOT_PATH
+	CLOUDFRONT_S3_ROOT_PATH,
+	ENVIRONMENT
 } from '$env/static/private';
 import cfsign from 'aws-cloudfront-sign';
 
@@ -13,6 +14,9 @@ import cfsign from 'aws-cloudfront-sign';
  * @returns
  */
 export const generateS3PresignedURL = (subpath: string) => {
+	// Dev testing to avoid s3 charges
+	if (ENVIRONMENT === 'dev') return `/src/lib/assets/s3${subpath}`;
+
 	const signingParams = {
 		keypairId: CLOUDFRONT_KEY_ACCESS_ID,
 		privateKeyPath: CLOUDFRONT_PRIVATE_KEY_PATH,
