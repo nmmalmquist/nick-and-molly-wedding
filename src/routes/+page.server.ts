@@ -1,4 +1,4 @@
-import { generateS3PresignedURL } from '$lib/server/generatePresignedURL';
+import { generateS3PresignedURL } from '$lib/server/util/generatePresignedURL';
 import type { PageServerLoad } from './$types';
 
 export const load: PageServerLoad = async () => {

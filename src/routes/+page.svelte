@@ -1,7 +1,7 @@
 <script lang="ts">
 	import FadeInImage from '$lib/components/FadeInImage.svelte';
 	import type { PageData } from './$types';
-
+	import backgroundImage from '$lib/assets/home-background.jpg';
 	export let data: PageData;
 </script>
 
@@ -11,11 +11,7 @@
 </svelte:head>
 
 <section class="h-screen relative flex justify-center items-center">
-	<FadeInImage
-		imagePath={data.backgroundImagePath}
-		alt="background"
-		otherClasses="absolute object-cover"
-	/>
+	<FadeInImage src={backgroundImage} alt="background" class="absolute object-cover" />
 	<div class="z-10 flex flex-col justify-center items-center m-3">
 		<h1 class="text-4xl text-center lg:text-6xl transition-all duration-500">
 			Welcome to our story.

@@ -1,15 +1,12 @@
-import { DDB_USER_TABLE_NAME } from '$env/static/private';
-import { DynamoDBClient } from '@aws-sdk/client-dynamodb';
+import crypto from 'node:crypto';
 import {
-	DynamoDBDocumentClient,
-	QueryCommand,
-	ScanCommand,
-	PutCommand
-} from '@aws-sdk/lib-dynamodb';
+	DDB_USER_TABLE_EMAIL_INDEX_NAME,
+	DDB_USER_TABLE_NAME,
+	HASH_ALGORITHM
+} from '$env/static/private';
+import { QueryCommand, ScanCommand, PutCommand } from '@aws-sdk/lib-dynamodb';
 import type { User } from '../models';
-
-const client = new DynamoDBClient({ region: 'us-east-1' });
-const docClient = DynamoDBDocumentClient.from(client);
+import docClient from './initialize';
 
 export const getAllUsers = async () => {
 	const command = new ScanCommand({
@@ -21,7 +18,7 @@ export const getAllUsers = async () => {
 	return response;
 };
 
-export const getOneUser = async (id: string) => {
+export const getOneUserById = async (id: string) => {
 	const command = new QueryCommand({
 		TableName: DDB_USER_TABLE_NAME,
 		KeyConditionExpression: 'id = :id',
@@ -32,10 +29,28 @@ export const getOneUser = async (id: string) => {
 	});
 
 	const response = await docClient.send(command);
-	return response;
+	return (response.Items as User[])?.[0];
+};
+
+export const getOneUserByEmail = async (email: string) => {
+	const command = new QueryCommand({
+		TableName: DDB_USER_TABLE_NAME,
+		IndexName: DDB_USER_TABLE_EMAIL_INDEX_NAME,
+		KeyConditionExpression: 'email = :email',
+		ExpressionAttributeValues: {
+			':email': email
+		},
+		ConsistentRead: false
+	});
+
+	const response = await docClient.send(command);
+	return (response.Items as User[])?.[0];
 };
 
 export const addUser = async (newUser: User) => {
+	// Hash password for storage
+	newUser.password = crypto.createHash(HASH_ALGORITHM).update(newUser.password).digest('base64');
+
 	const command = new PutCommand({
 		TableName: DDB_USER_TABLE_NAME,
 		Item: newUser

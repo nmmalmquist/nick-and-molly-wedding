@@ -1,10 +1,10 @@
 import type { Actions } from './$types';
 import { JWT_SECRET, JWT_COOKIE_NAME } from '$env/static/private';
 import { redirect } from '@sveltejs/kit';
-import { unknownErrorResponse } from '$lib/server/responses';
+import { emailAlreadyExistsResponse, unknownErrorResponse } from '$lib/server/constants/responses';
 import jsonwebtoken from 'jsonwebtoken';
 import type { User } from '$lib/server/models';
-import { addUser } from '$lib/server/dynamodb/user';
+import { addUser, getOneUserByEmail } from '$lib/server/dynamodb/user';
 import { v4 as uuidv4 } from 'uuid';
 
 export const actions: Actions = {
@@ -18,15 +18,20 @@ export const actions: Actions = {
 			password: data.get('password')?.valueOf() as string,
 			roles: []
 		};
+
+		const existingUser = await getOneUserByEmail(user.email);
+		if (existingUser) {
+			return emailAlreadyExistsResponse();
+		}
+
 		try {
 			await addUser(user);
 		} catch (error) {
-			unknownErrorResponse();
-			throw error;
+			return unknownErrorResponse();
 		}
 
 		const jwt = jsonwebtoken.sign({ username: user.email }, JWT_SECRET, { expiresIn: 30 });
-		cookies.set(JWT_COOKIE_NAME, jwt);
+		cookies.set(JWT_COOKIE_NAME, jwt, { path: '/' });
 		throw redirect(302, '/gallery');
 	}
 };

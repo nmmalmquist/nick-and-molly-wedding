@@ -1,16 +1,18 @@
 <script lang="ts">
-	export let imagePath: string;
-	export let alt: string;
-	export let otherClasses: string = '';
+	import type { HTMLImgAttributes } from 'svelte/elements';
 
-    let imageLoaded = false;
+	type $$Props = HTMLImgAttributes;
+	$: props = $$props as $$Props;
+
+	let imageLoaded = false;
 </script>
 
 <img
-	src={imagePath}
-	{alt}
-	class={`h-full w-full transition duration-500 ease-in opacity-0 ${
-		imageLoaded && 'opacity-100'
-	} ${otherClasses}`}
+	{...props}
+	src={props.src}
+	alt={props.alt}
+	class={`h-full w-full transition duration-500 ease-in opacity-0 ${imageLoaded && 'opacity-100'} ${
+		props.class
+	}`}
 	on:load={() => (imageLoaded = true)}
 />

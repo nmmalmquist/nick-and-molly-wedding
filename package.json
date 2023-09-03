@@ -2,7 +2,7 @@
 	"name": "nick-and-molly-wedding",
 	"version": "0.0.1",
 	"scripts": {
-		"dev": "vite dev",
+		"dev": "vite dev & dynamodb-local",
 		"build": "vite build",
 		"preview": "vite preview",
 		"test": "npm run test:integration && npm run test:unit",
